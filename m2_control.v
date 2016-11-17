@@ -383,7 +383,7 @@ endmodule
 module enemy_datapath(
 							input [7:0] x0_in, x1_in, x2_in, x3_in, x4_in, x5_in, x6_in, x7_in, x8_in, x9_in, 
 										   y0_in, y1_in, y2_in, y3_in, y4_in, y5_in, y6_in, y7_in, y8_in, y9_in,
-							input load_coord, clk,
+							input load_coord, clk, enable,
 							output reg [7:0] x_out, y_out, color_out
 							);
 							
@@ -443,10 +443,29 @@ module enemy_datapath(
 	
 	// Selecion counter
 	
-	reg [7:0] selete
+	reg [3:0] select;
+	reg [4:0] s_count;
 	
 	always @(posedge clk)
 	begin
+		if (!reset_n)
+		begin
+			select <= 4'd0;
+			s_count <= 5'd0;
+		end
+		else if (enable)
+		begin
+			if (s_count == 5'd25)
+			begin
+				if (select == 4'd9)
+					select <= 4'd0;
+				else
+					select <= select + 1'b1;
+				
+				s_count <= 5'd0;
+			else
+				s_count <= s_count +1'b1;
+		end
 		
 	end
 	
@@ -457,7 +476,7 @@ module enemy_datapath(
 	
 	always @(*)
 	begin
-		case (selete)
+		case (select)
 			1'd0: begin
 			x_buff = x0;
 			y_buff = y0;
@@ -501,6 +520,8 @@ module enemy_datapath(
 		endcase
 	end
 	
+	wire en_y_count;
+	
 	// X counter
 	always @(posedge clk)
 	begin
@@ -509,24 +530,20 @@ module enemy_datapath(
 	else if (enable)
 		begin
 		if (x_count == 3'b100)
-			begin
 			x_count <= 3'b000;
-			en_y_count <= 1'b1;
-			end
 		else
-			begin
 			x_count = x_count + 1'b1;
-			en_y_count <= 1'b0;
-			end
 		end
 	end
+	
+	assign en_y_count = (x_count == 1'b000) ? 1 : 0;
 	
 	// Y counter
 	always @(posedge clk)
 	begin
 	if (reset_n == 1'b0)
 		y_count <= 3'b000;
-	else if (en_y_count)
+	else if (en_y_count & enable)
 		begin
 		if (y_count == 3'b100)
 			y_count <= 3'b000;
@@ -537,5 +554,33 @@ module enemy_datapath(
 	
 	assign x_out = x_buff + x_count;
 	assign y_out = y_buff + y_count;
+	
+	// Color handle
+	always @(*)
+	begin
+		color_out = black;
+		case (op)
+			draw: begin
+				if (y_count == 3'b001 & x_count == 3'b010)
+					color_out = white;
+				else if (y_count == 3'b010)
+					color_out = white;
+				else if (y_count == 3'b011 & x_count == 3'b010)
+					color_out = white;
+				else if (y_count == 3'b100)
+					begin
+					if (x_count == 3'b001)
+						color_out = white;
+					else if (x_count == 3'b010)
+						color_out = white;
+					else if (x_count == 3'b011)
+						color_out = white;
+					end
+				end
+			
+			erase: color_out = black;
+			
+		endcase
+	end
 	
 endmodule
