@@ -8,7 +8,7 @@ module enemy_control(
 							);
 
 	localparam 
-					black = 3'b000, 
+					black = 3'b000,
 					white = 3'b111,
 					S_DRAW = 3'b000,
 					S_ERASE = 3'b001,
@@ -173,6 +173,7 @@ module enemy_control(
 			endcase
 	end
 	
+	// Y Coord handle.
 	y_counter c0(.enable(c0en), 
 					 .clk(clk), 
 					 .move(move), 
@@ -273,12 +274,14 @@ module enemy_control(
 					 .touch_edge(p9_edge)
 					 );
 					 
+	// Boarder touch detection.
 	wire [9:0]touch_edge_sum;
 	wire touch_edge;
 	assign touch_edge = ({p9_edge, p8_edge, p7_edge, p6_edge, p5_edge, p4_edge, p3_edge, p2_edge, p1_edge, p0_edge} == 10'd0) ? 1'b0 : 1'b1;
 	
-	// Wait counter
-	
+	// Wait counter.
+	/* Generate "go" signal. "go" signal should be generate after 
+	   "en_wait_counter" is high for 1/30s. */
 	reg [20:0] w;
 	
 	always @(posedge clk)
@@ -298,6 +301,7 @@ module enemy_control(
 	
 	// End
 	
+	// FSM.
 	// State table
 	always @(*)
 	begin
@@ -309,12 +313,13 @@ module enemy_control(
 			S_WAIT: next_state = go ? S_DRAW : S_WAIT;
 		endcase
 	end
-			
+	
+	
 	always @(*)
 	begin
 		
 		case
-			S_DRAW:
+			S_DRAW: // Not yet complete
 			S_ERASE:
 			S_CHECK_OVER:
 			S_GAME_OVER:
@@ -331,8 +336,10 @@ module enemy_control(
 			current_state <= next_state;
 	end
 	
-	// Move counter
 	
+	// Move counter
+	// Generate "move" signal every 1/4s if move_en is high. If "move" signal is high,
+	// Y coord will update at posedge of clk.
 	reg [23:0]m;
 	
 	always @(posedge clk)
@@ -352,6 +359,7 @@ module enemy_control(
 		
 endmodule
 
+// y_counter module. Keep track of enemy's plane's y coord.
 module y_counter(
 					input enable, clk, move, reset_n, destroyed
 					input [1:0]flying_rate,
@@ -378,4 +386,12 @@ module y_counter(
 
 	assign touch_edge = (y_out == 8'd120) ? 1'b1 : 1'b0;
 	
+endmodule
+
+// Generate a new random int (4'd0-4'd15) when "next_int" goes high.
+module random_int(
+						input next_int, // Additional input may required.
+						output [3:0] rand_int
+						);
+						
 endmodule
