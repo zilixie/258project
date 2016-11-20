@@ -12,10 +12,14 @@ module enemy_control(
 					white = 3'b111,
 					S_DRAW = 3'b000,
 					S_ERASE = 3'b001,
+					S_WAIT = 3'b010;
 	
-	reg c0en, c1en, c2en, c3en, c4en, c5en, c6en, c7en, c8en, c9en;
-	wire move, p9_edge, p8_edge, p7_edge, p6_edge, p5_edge, p4_edge, p3_edge, p2_edge, p1_edge, p0_edge;
+	
 
+	
+	// Handle numbers of enemy's plane.
+	reg c0en, c1en, c2en, c3en, c4en, c5en, c6en, c7en, c8en, c9en;
+	
 	always @(*)
 	begin
 		c0en = 1'b0;
@@ -173,7 +177,115 @@ module enemy_control(
 			endcase
 	end
 	
+	// X Coord handle.
+	wire [7:0] rand_int;
+	wire next_int;
+	
+	random_int r0 (.next_int(next_int),
+						.rand_int(rand_int)
+						);
+						
+	//X Coord registers.
+	
+	wire load_x0, load_x1, load_x2, load_x3, load_x4, 
+		  load_x5, load_x6, load_x7, load_x8, load_x9;
+	
+	always @(*)
+	begin
+		if (load_x0)
+			x0 = rand_int;
+		else if (load_x1)
+			x1 = rand_int;
+		else if (load_x2)
+			x2 = rand_int;
+		else if (load_x3)
+			x3 = rand_int;
+		else if (load_x4)
+			x4 = rand_int;
+		else if (load_x5)
+			x5 = rand_int;
+		else if (load_x6)
+			x6 = rand_int;
+		else if (load_x7)
+			x7 = rand_int;
+		else if (load_x8)
+			x8 = rand_int;
+		else if (load_x9)
+			x9 = rand_int;
+		else
+			x0 = 8'd102;
+			x1 = 8'd82; 
+			x2 = 8'd62; 
+			x3 = 8'd122; 
+			x4 = 8'd72; 
+			x5 = 8'd32; 
+			x6 = 8'd42; 
+			x7 = 8'd2; 
+			x8 = 8'd12; 
+			x9 = 8'd142;
+	end
+	
+	// Destroy handle.
+
+	wire p0des, p1des, p2des, p3des, p4des, 
+		  p5des, p6des, p7des, p8des, p9des; // = 1'b0 ?
+		  
+	wire p9_edge, p8_edge, p7_edge, p6_edge, p5_edge, 
+		  p4_edge, p3_edge, p2_edge, p1_edge, p0_edge;
+	
+	// Temprary assign destroy.
+	assign p0des = p0_edge;
+	assign p1des = p1_edge;
+	assign p2des = p2_edge;
+	assign p3des = p3_edge;
+	assign p4des = p4_edge;
+	assign p5des = p5_edge;
+	assign p6des = p6_edge;
+	assign p7des = p7_edge;
+	assign p8des = p8_edge;
+	assign p9des = p9_edge;
+	
+	// Assign load signal.
+	assign load_x0 = (p0des == 1'b1) ? 1'b1 : 1'b0;
+	assign load_x1 = (p1des == 1'b1) ? 1'b1 : 1'b0;
+	assign load_x2 = (p2des == 1'b1) ? 1'b1 : 1'b0;
+	assign load_x3 = (p3des == 1'b1) ? 1'b1 : 1'b0;
+	assign load_x4 = (p4des == 1'b1) ? 1'b1 : 1'b0;
+	assign load_x5 = (p5des == 1'b1) ? 1'b1 : 1'b0;
+	assign load_x6 = (p6des == 1'b1) ? 1'b1 : 1'b0;
+	assign load_x7 = (p7des == 1'b1) ? 1'b1 : 1'b0;
+	assign load_x8 = (p8des == 1'b1) ? 1'b1 : 1'b0;
+	assign load_x9 = (p9des == 1'b1) ? 1'b1 : 1'b0;
+	
+	assign next_int = p0des|p1des|p2des|p3des|p4des|p5des|p6des|p7des|p8des|p9des;
+	
+	
+	
 	// Y Coord handle.
+	wire move;
+	
+		  
+	// Move counter
+	// Generate "move" signal every 1/4s if move_en is high. If "move" signal is high,
+	// Y coord will update at posedge of clk.
+	reg [23:0]m;
+	
+	always @(posedge clk)
+	begin
+		if (!reset_n)
+			m <= 24'd0;
+		else if (move_en)
+		begin
+			if (m == 24'd12499999)
+				m <= 24'd0;
+			else
+				m <= m + 1'b1;
+		end
+	end
+	
+	assign move = (m == 24'd12499999) ? 1 : 0;
+	
+	// Y counter.
 	y_counter c0(.enable(c0en), 
 					 .clk(clk), 
 					 .move(move), 
@@ -275,41 +387,22 @@ module enemy_control(
 					 );
 					 
 	// Boarder touch detection.
-	wire [9:0]touch_edge_sum;
+	wire [9:0] touch_edge_sum = {p9_edge, p8_edge, p7_edge, p6_edge, p5_edge, 
+										  p4_edge, p3_edge, p2_edge, p1_edge, p0_edge};
 	wire touch_edge;
-	assign touch_edge = ({p9_edge, p8_edge, p7_edge, p6_edge, p5_edge, p4_edge, p3_edge, p2_edge, p1_edge, p0_edge} == 10'd0) ? 1'b0 : 1'b1;
-	
-	// Wait counter.
-	/* Generate "go" signal. "go" signal should be generate after 
-	   "en_wait_counter" is high for 1/30s. */
-	reg [20:0] w;
-	
-	always @(posedge clk)
-	begin
-		if (!reset_n)
-			w <= 21'd0;
-		else if (en_wait_counter)
-		begin
-			if (w == 21'd1666666)
-				w <= 21'd0;
-			else
-				w = w + 1'b1;
-		end
-	end
-	
-	assign go = (w == 21'd1666666) ? 1'b1 : 1'b0;
-	
+	assign touch_edge = ( touch_edge_sum == 10'd0) ? 1'b0 : 1'b1;
 	// End
+	
 	
 	// FSM.
 	// State table
 	always @(*)
 	begin
 		case (current_state)
-			S_DRAW: next_state = done == 1'b1 ? S_ERASE : S_DRAW;
-			S_ERASE: next_state = done ? S_CHECK_OVER : S_ERASE;
-			S_CHECK_OVER: next_state = touch_edge ? S_GAME_OVER : S_WAIT;
-			S_GAME_OVER: next_state = S_DRAW;
+			S_DRAW: next_state = done ? S_ERASE : S_DRAW;
+			S_ERASE: next_state = done ? S_WAIT : S_ERASE;
+			// S_CHECK_OVER: next_state = touch_edge ? S_GAME_OVER : S_WAIT;
+			// S_GAME_OVER: next_state = S_DRAW;
 			S_WAIT: next_state = go ? S_DRAW : S_WAIT;
 		endcase
 	end
@@ -336,26 +429,27 @@ module enemy_control(
 			current_state <= next_state;
 	end
 	
-	
-	// Move counter
-	// Generate "move" signal every 1/4s if move_en is high. If "move" signal is high,
-	// Y coord will update at posedge of clk.
-	reg [23:0]m;
+	// Wait counter.
+	/* Generate "go" signal. "go" signal should be generate after 
+	   "en_wait_counter" is high for 1/30s. */
+	reg [20:0] w;
 	
 	always @(posedge clk)
 	begin
 		if (!reset_n)
-			m <= 24'd0;
-		else if (move_en)
+			w <= 21'd0;
+		else if (en_wait_counter)
 		begin
-			if (m == 24'd12499999)
-				m <= 24'd0;
+			if (w == 21'd1666666)
+				w <= 21'd0;
 			else
-				m <= m + 1'b1;
+				w = w + 1'b1;
 		end
 	end
 	
-	assign move = (m == 24'd12499999) ? 1 : 0;
+	assign go = (w == 21'd1666666) ? 1'b1 : 1'b0;
+	
+	// End
 		
 endmodule
 
