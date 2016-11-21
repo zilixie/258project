@@ -2,11 +2,15 @@ module enemy_datapath(
 							input [7:0] x0_in, x1_in, x2_in, x3_in, x4_in, x5_in, x6_in, x7_in, x8_in, x9_in, 
 										   y0_in, y1_in, y2_in, y3_in, y4_in, y5_in, y6_in, y7_in, y8_in, y9_in,
 							input load_coord, clk, enable,
+							input [1:0] op,
 							output reg [7:0] x_out, y_out, color_out
 							);
 							
 	reg [7:0] x0, x1, x2, x3, x4, x5, x6, x7, x8, x9,
 				 y0, y1, y2, y3, y4, y5, y6, y7, y8, y9,
+	
+	localparam draw = 1'b00,
+				  erase = 1'b01;
 				 
 	// Coord Register
 	always @(posedge clk)

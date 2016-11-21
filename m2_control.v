@@ -4,7 +4,9 @@ module enemy_control(
 							input [1:0] flying_rate,
 							output reg [7:0] x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, 
 												  y0, y1, y2, y3, y4, y5, y6, y7, y8, y9,
-							output reg [2:0] vis0, vis1, vis2, vis3, vis4, vis5, vis6, vis7, vis8, vis9
+							output reg [2:0] vis0, vis1, vis2, vis3, vis4, vis5, vis6, vis7, vis8, vis9,
+							output reg [1:0] op
+							output reg datapath_en, load_coord
 							);
 
 	localparam 
@@ -193,25 +195,25 @@ module enemy_control(
 	always @(*)
 	begin
 		if (load_x0)
-			x0 = rand_int;
+			x0 = 10 * rand_int + 3;
 		else if (load_x1)
-			x1 = rand_int;
+			x1 = 10 * rand_int + 3;
 		else if (load_x2)
-			x2 = rand_int;
+			x2 = 10 * rand_int + 3;
 		else if (load_x3)
-			x3 = rand_int;
+			x3 = 10 * rand_int + 3;
 		else if (load_x4)
-			x4 = rand_int;
+			x4 = 10 * rand_int + 3;
 		else if (load_x5)
-			x5 = rand_int;
+			x5 = 10 * rand_int + 3;
 		else if (load_x6)
-			x6 = rand_int;
+			x6 = 10 * rand_int + 3;
 		else if (load_x7)
-			x7 = rand_int;
+			x7 = 10 * rand_int + 3;
 		else if (load_x8)
-			x8 = rand_int;
+			x8 = 10 * rand_int + 3;
 		else if (load_x9)
-			x9 = rand_int;
+			x9 = 10 * rand_int + 3;
 		else
 			x0 = 8'd102;
 			x1 = 8'd82; 
@@ -276,14 +278,14 @@ module enemy_control(
 			m <= 24'd0;
 		else if (move_en)
 		begin
-			if (m == 24'd12499999)
+			if (m == 24'd12499999) // real rate: 24'd12499999
 				m <= 24'd0;
 			else
 				m <= m + 1'b1;
 		end
 	end
 	
-	assign move = (m == 24'd12499999) ? 1 : 0;
+	assign move = (m == 24'd12499999) ? 1 : 0; // real rate: 24'd12499999
 	
 	// Y counter.
 	y_counter c0(.enable(c0en), 
@@ -410,13 +412,30 @@ module enemy_control(
 	
 	always @(*)
 	begin
-		
+		move_en = 1'b0;
+		en_wait_counter = 1'b0;
+		op = 2'b00;
+		load_coord = 1'b0;
+		datapath_en = 1'b0;
 		case
-			S_DRAW: // Not yet complete
-			S_ERASE:
-			S_CHECK_OVER:
-			S_GAME_OVER:
-			S_WAIT:
+			S_DRAW: begin
+				move_en = 1'b1;
+				op = 2'b00;
+				end
+			S_ERASE: begin
+				op = 2'b01;
+				end
+				
+			/*S_CHECK_OVER: begin
+			
+			end
+			S_GAME_OVER: begin
+			
+			end*/
+			
+			S_WAIT: begin
+				move_en = 1'b1;
+				end
 		endcase
 	end
 	
@@ -440,14 +459,14 @@ module enemy_control(
 			w <= 21'd0;
 		else if (en_wait_counter)
 		begin
-			if (w == 21'd1666666)
+			if (w == 21'd1666666) // real: 21'd1666666
 				w <= 21'd0;
 			else
 				w = w + 1'b1;
 		end
 	end
 	
-	assign go = (w == 21'd1666666) ? 1'b1 : 1'b0;
+	assign go = (w == 21'd1666666) ? 1'b1 : 1'b0; // real: 21'd1666666
 	
 	// End
 		
