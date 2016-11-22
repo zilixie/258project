@@ -17,11 +17,11 @@ module FSM(
 	always @(*)
 	begin
 		case (current_state)
-			S_DRAW: next_state = done ? S_ERASE : S_DRAW;
-			S_ERASE: next_state = done ? S_WAIT : S_ERASE;
-		   S_CHECK_OVER: next_state = touch_edge ? S_GAME_OVER : S_WAIT;
+			S_DRAW: next_state = done ? S_CHECK_OVER : S_DRAW;
+		    S_CHECK_OVER: next_state = touch_edge ? S_GAME_OVER : S_WAIT;
 			S_GAME_OVER: next_state = S_DRAW;
-			S_WAIT: next_state = go ? S_LOAD_COORD : S_WAIT;
+			S_WAIT: next_state = go ? S_ERASE : S_WAIT;
+			S_ERASE: next_state = done ? S_LOAD_COORD : S_ERASE;
 			S_LOAD_COORD: next_state = S_DRAW;
 		endcase
 	end
