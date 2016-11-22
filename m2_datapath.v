@@ -3,19 +3,26 @@ module enemy_datapath(
 										   y0_in, y1_in, y2_in, y3_in, y4_in, y5_in, y6_in, y7_in, y8_in, y9_in,
 							input load_coord, clk, enable,
 							input [1:0] op,
-							output reg [7:0] x_out, y_out, color_out
+                                                        input [9:0] visible,
+                                                        input reset_n,
+							output [7:0] x_out, y_out,
+                                                        output reg [2:0] color_out
 							);
 							
 	reg [7:0] x0, x1, x2, x3, x4, x5, x6, x7, x8, x9,
-				 y0, y1, y2, y3, y4, y5, y6, y7, y8, y9,
+				 y0, y1, y2, y3, y4, y5, y6, y7, y8, y9;
+        reg [2:0] x_count, y_count;
 	
 	localparam draw = 1'b00,
-				  erase = 1'b01;
+		   erase = 1'b01;
+
+        reg [3:0] white;
+        reg [3:0] black;
 				 
 	// Coord Register
 	always @(posedge clk)
 	begin
-		if (!reset)
+		if (!reset_n)
 		begin
 			x0 <= 8'd0;
 			x1 <= 8'd0;
@@ -85,6 +92,7 @@ module enemy_datapath(
 					select <= select + 1'b1;
 				
 				s_count <= 5'd0;
+                        end
 			else
 				s_count <= s_count +1'b1;
 		end
@@ -94,50 +102,180 @@ module enemy_datapath(
 	
 	// mux 9 to 1
 	
-	reg [7:0] x_buff, y_buff
+	reg [7:0] x_buff, y_buff;
 	
 	always @(*)
 	begin
 		case (select)
-			1'd0: begin
+			1'd0: 
+			begin
 			x_buff = x0;
 			y_buff = y0;
+                       		begin 
+                        	if (visible[0:0] == 1'b0)
+                                        begin
+                                	white = 3'b000;
+                                        black = 3'b000;
+                                        end
+                                else if (visible[0:0] == 1'b1)
+                                        begin
+                                	white = 3'b111;
+                                        black = 3'b000;
+                                        end
+                                end
 			end
-			1'd1:begin
+			1'd1:
+			begin
 			x_buff = x1;
 			y_buff = y1;
+                       		begin 
+                        	if (visible[1:1] == 1'b0)
+                                        begin
+                                	white = 3'b000;
+                                        black = 3'b000;
+					end
+                                else if (visible[1:1] == 1'b1)
+					begin
+                                	white = 3'b111;
+                                        black = 3'b000;
+					end
+                                end
 			end
-			1'd2:begin
+			1'd2:
+			begin
 			x_buff = x2;
 			y_buff = y2;
+                       		begin 
+                        	if (visible[2:2] == 1'b0)
+					begin
+                                	white = 3'b000;
+                                        black = 3'b000;
+					end
+                                else if (visible[2:2] == 1'b1)
+					begin
+                                	white = 3'b111;
+                                        black = 3'b000;
+					end
+                                end
 			end
-			1'd3:begin
+			1'd3:
+			begin
 			x_buff = x3;
 			y_buff = y3;
+                       		begin 
+                        	if (visible[3:3] == 1'b0)
+					begin
+                                	white = 3'b111;
+                                        black = 3'b000;
+					end
+                                else if (visible[0:0] == 1'b1)
+					begin
+                                	white = 3'b000;
+                                        black = 3'b000;
+					end
+                                end
 			end
-			1'd4:begin
+			1'd4:
+			begin
 			x_buff = x4;
 			y_buff = y4;
+                       		begin 
+                        	if (visible[4:4] == 1'b0)
+					begin
+                                	white = 3'b111;
+                                        black = 3'b000;
+					end
+                                else if (visible[4:4] == 1'b1)
+					begin
+                                	white = 3'b000;
+                                        black = 3'b000;
+					end
+                                end
 			end
-			1'd5:begin
+			1'd5:
+			begin
 			x_buff = x5;
 			y_buff = y5;
+                       		begin 
+                        	if (visible[5:5] == 1'b0)
+					begin
+                                	white = 3'b111;
+                                        black = 3'b000;
+					end
+                                else if (visible[5:5] == 1'b1)
+					begin
+                                	white = 3'b000;
+                                        black = 3'b000;
+					end
+                                end
 			end
-			1'd6:begin
+			1'd6:
+			begin
 			x_buff = x6;
 			y_buff = y6;
+                       		begin 
+                        	if (visible[6:6] == 1'b0)
+					begin
+                                	white = 3'b111;
+                                        black = 3'b000;
+					end
+                                else if (visible[6:6] == 1'b1)
+					begin
+                                	white = 3'b000;
+                                        black = 3'b000;
+					end
+                                end
 			end
-			1'd7:begin
+			1'd7:
+			begin
 			x_buff = x7;
 			y_buff = y7;
+                       		begin 
+                        	if (visible[7:7] == 1'b0)
+					begin
+                                	white = 3'b111;
+                                        black = 3'b000;
+					end
+                                else if (visible[7:7] == 1'b1)
+					begin
+                                	white = 3'b000;
+                                        black = 3'b000;
+					end
+                                end
 			end
-			1'd8:begin
+			1'd8:
+			begin
 			x_buff = x8;
 			y_buff = y8;
+                       		begin 
+                        	if (visible[8:8] == 1'b0)
+					begin
+                                	white = 3'b111;
+                                        black = 3'b000;
+					end
+                                else if (visible[8:8] ==1'b1)
+					begin
+                                	white = 3'b000;
+                                        black = 3'b000;
+					end
+                                end
 			end
-			1'd9:begin
+			1'd9:
+			begin
 			x_buff = x9;
 			y_buff = y9;
+                       		begin 
+                        	if (visible[9:9] == 1'b0)
+					begin
+                                	white = 3'b000;
+                                        black = 3'b000;
+					end
+                                else if (visible[9:9] == 1'b1)
+					begin
+                                	white = 3'b000;
+                                        black = 3'b000;
+					end
+                                end
 			end
 		endcase
 	end
@@ -183,13 +321,25 @@ module enemy_datapath(
 		color_out = black;
 		case (op)
 			draw: begin
-				if (y_count == 3'b001 & x_count == 3'b010)
-					color_out = white;
+				if (y_count == 3'b000)
+					begin
+					if (x_count == 3'b001)
+						color_out = white;
+					else if (x_count == 3'b011)
+						color_out = white;
+					end
+				else if (y_count == 3'b001)
+					begin
+					if (x_count == 3'b000)
+						color_out = white;
+					else if (x_count == 3'b001)
+						color_out = white;
+					else if (x_count == 3'b011)
+						color_out = white;
+					else if (x_count == 3'b100)
+						color_out = white;
+					end
 				else if (y_count == 3'b010)
-					color_out = white;
-				else if (y_count == 3'b011 & x_count == 3'b010)
-					color_out = white;
-				else if (y_count == 3'b100)
 					begin
 					if (x_count == 3'b001)
 						color_out = white;
@@ -198,6 +348,8 @@ module enemy_datapath(
 					else if (x_count == 3'b011)
 						color_out = white;
 					end
+				else if (y_count == 3'b011 & x_count == 3'b010)
+					color_out = white;
 				end
 			
 			erase: color_out = black;
