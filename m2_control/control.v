@@ -6,7 +6,7 @@ module control(
 							 y0, y1, y2, y3, y4, y5, y6, y7, y8, y9,
 				output [9:0] vis,
 				output [1:0] op,
-				output load_coord, enable_datapath
+				output load_coord, enable_datapath, plot
 				);
 
 	wire [9:0] load_x, c_en, touch_edge, des;
@@ -35,7 +35,8 @@ module control(
 			.move_en(move_en),
 			.load_coord(load_coord),
 			.datapath_en(enable_datapath),
-			.op(op)
+			.op(op),
+			.plot(plot)
 			)
 			
 	x_coord_reg xcrd0(

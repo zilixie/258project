@@ -1,6 +1,6 @@
 module FSM(
 			  input clk, reset_n,
-			  output reg move_en, load_coord, datapath_en,
+			  output reg move_en, load_coord, datapath_en, plot,
 			  output reg [1:0] op
 			  );
 				
@@ -38,18 +38,21 @@ module FSM(
 		load_coord = 1'b0;
 		datapath_en = 1'b0;
 		done_en = 1'b0;
+		plot = 1'b0;
 		case
 			S_DRAW: begin
 				move_en = 1'b1;
 				op = 2'b00;
 				datapath_en = 1'b1;
 				done_en = 1'b1;
+				plot = 1'b1;
 				end
 			S_ERASE: begin
 				move_en = 1'b1;
 				op = 2'b01;
 				datapath_en = 1'b1;
 				done_en = 1'b1;
+				plot 1'b1;
 				end
 			S_CHECK_OVER: begin
 			
