@@ -6,8 +6,8 @@ module y_coord_counter(
 							  input [9:0] des,
 							  input [1:0] flying_rate,
 							  input reset_n, clk,
-							  output reg [9:0] touch_edge
-							  output [7:0] y0, y1, y2, y3, y5, y6, y7, y8, y9
+							  output [9:0] touch_edge,
+							  output [7:0] y0, y1, y2, y3, y4, y5, y6, y7, y8, y9
 							  );
 
 	wire move;
@@ -22,7 +22,7 @@ module y_coord_counter(
 	always @(*)
 	begin
 		case(flying_rate)
-			2'b00: counter_value = 24'd12499999;
+			2'b00: counter_value = 24'd10;//12499999
 			2'b01: counter_value = 24'd6499999;
 			2'b10: counter_value = 24'd3999999;
 			2'b11: counter_value = 24'd1999999;
@@ -34,7 +34,7 @@ module y_coord_counter(
 	always @(posedge clk)
 	begin
 		if (!reset_n)
-			m <= 24'd0;
+			m <= counter_value;
 		else if (move_en)
 		begin
 			if (m == 24'd0)
@@ -52,7 +52,7 @@ module y_coord_counter(
 					 .move(move), 
 					 .reset_n(reset_n), 
 					 .destroyed(des[0]),
-				     .y_out(y0),
+				         .y_out(y0),
 					 .touch_edge(touch_edge[0])
 					 );
 					 
@@ -61,7 +61,7 @@ module y_coord_counter(
 					 .move(move), 
 					 .reset_n(reset_n), 
 					 .destroyed(des[1]),
-				     .y_out(y1),
+				         .y_out(y1),
 					 .touch_edge(touch_edge[1])
 					 );
 	
@@ -70,7 +70,7 @@ module y_coord_counter(
 					 .move(move), 
 					 .reset_n(reset_n), 
 					 .destroyed(des[2]),
-				     .y_out(y2),
+				         .y_out(y2),
 					 .touch_edge(touch_edge[2])
 					 );
 					 
@@ -79,7 +79,7 @@ module y_coord_counter(
 					 .move(move), 
 					 .reset_n(reset_n), 
 					 .destroyed(des[3]),
-				     .y_out(y3),
+				         .y_out(y3),
 					 .touch_edge(touch_edge[3])
 					 );
 					 
@@ -88,7 +88,7 @@ module y_coord_counter(
 					 .move(move), 
 					 .reset_n(reset_n), 
 					 .destroyed(des[4]),
-				     .y_out(y4),
+				         .y_out(y4),
 					 .touch_edge(touch_edge[4])
 					 );
 					 
@@ -97,7 +97,7 @@ module y_coord_counter(
 					 .move(move), 
 					 .reset_n(reset_n), 
 					 .destroyed(des[5]),
-				     .y_out(y5),
+				         .y_out(y5),
 					 .touch_edge(touch_edge[5])
 					 );
 					
@@ -106,7 +106,7 @@ module y_coord_counter(
 					 .move(move), 
 					 .reset_n(reset_n), 
 					 .destroyed(des[6]),
-				     .y_out(y6),
+				         .y_out(y6),
 					 .touch_edge(touch_edge[6])
 					 );
 					 
@@ -115,7 +115,7 @@ module y_coord_counter(
 					 .move(move), 
 					 .reset_n(reset_n), 
 					 .destroyed(des[7]),
-				     .y_out(y7),
+				         .y_out(y7),
 					 .touch_edge(touch_edge[7])
 					 );
 					 
@@ -124,7 +124,7 @@ module y_coord_counter(
 					 .move(move), 
 					 .reset_n(reset_n), 
 					 .destroyed(des[8]),
-				     .y_out(y8),
+				         .y_out(y8),
 					 .touch_edge(touch_edge[8])
 					 );
 					 
@@ -133,15 +133,16 @@ module y_coord_counter(
 					 .move(move), 
 					 .reset_n(reset_n), 
 					 .destroyed(des[9]),
-				     .y_out(y9),
+				         .y_out(y9),
 					 .touch_edge(touch_edge[9])
 					 );
+
 					 
 endmodule
 
 // y_counter module. Keep track of enemy's plane's y coord.
 module y_counter(
-					  input enable, clk, move, reset_n, destroyed
+					  input enable, clk, move, reset_n, destroyed,
 					  output reg [7:0] y_out,
 					  output touch_edge
 					  );

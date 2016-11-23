@@ -26,7 +26,8 @@ module x_coord_reg(
 			x8 = 10 * rand_int + 2;
 		else if (load_x[9])
 			x9 = 10 * rand_int + 2;
-		else
+		else if (load_x == 10'd0)
+			begin
 			x0 = 8'd102;
 			x1 = 8'd82; 
 			x2 = 8'd62; 
@@ -37,6 +38,7 @@ module x_coord_reg(
 			x7 = 8'd2; 
 			x8 = 8'd12; 
 			x9 = 8'd142;
+			end
 	end
 	
 endmodule
