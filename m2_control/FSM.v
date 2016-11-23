@@ -5,11 +5,10 @@ module FSM(
 			  );
 				
 	localparam  S_DRAW  = 4'd0,
-					S_ERASE = 4'd1,
-					S_WAIT  = 4'd2,
-					S_CHECK_OVER = 4'd3,
-					S_GAME_OVER = 4'd4
-					;
+		    S_ERASE = 4'd1,
+		    S_WAIT  = 4'd2,
+		    S_CHECK_OVER = 4'd3,
+		    S_GAME_OVER = 4'd4;
 					
 	wire touch_edge = 1'b0 // Due to m2's design, touch_edge will always be low. Game will never over.
 	
@@ -18,7 +17,7 @@ module FSM(
 	begin
 		case (current_state)
 			S_DRAW: next_state = done ? S_CHECK_OVER : S_DRAW;
-		    S_CHECK_OVER: next_state = touch_edge ? S_GAME_OVER : S_WAIT;
+		        S_CHECK_OVER: next_state = touch_edge ? S_GAME_OVER : S_WAIT;
 			S_GAME_OVER: next_state = S_DRAW;
 			S_WAIT: next_state = go ? S_ERASE : S_WAIT;
 			S_ERASE: next_state = done ? S_LOAD_COORD : S_ERASE;

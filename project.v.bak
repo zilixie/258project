@@ -126,12 +126,12 @@ module control(
 	// State table
 	always @(*)
         begin
-	case (current_state)
-		S_LOAD: next_state = DRAW;
-		DRAW: next_state = done ? WAIT : DRAW;
-		WAIT: next_state = wait_go ? ERASE : WAIT;
-		ERASE: next_state = done ? S_LOAD : ERASE;
-		default: next_state = S_LOAD;
+		case (current_state)
+			S_LOAD: next_state = DRAW;
+			DRAW: next_state = done ? WAIT : DRAW;
+			WAIT: next_state = wait_go ? ERASE : WAIT;
+			ERASE: next_state = done ? S_LOAD : ERASE;
+			default: next_state = S_LOAD;
         endcase
 	end
 
@@ -145,52 +145,47 @@ module control(
 		load = 1'b0;
 		case (current_state)
 		
-		S_LOAD:
-		begin
+		S_LOAD:begin
 			load = 1'b1; // Load x, y to datapath.
 		end
-		DRAW: 
-		begin
-         		if (enable_fire == 1'b0)
-         		begin
-		      		plot = 1'b1;
+		DRAW: begin
+         if (enable_fire == 1'b0)
+         begin
+		      plot = 1'b1;
 				counter_enable = 1'b1;
-		      		op = 2'b00;
-		      		enable_draw = 1'b1;
+		      op = 2'b00;
+		      enable_draw = 1'b1;
 				enable_wait = 1'b0;
-         		end
-         		else if (enable_fire == 1'b1) // If enable_fire, then set op to 2.
-         		begin
-		     		plot = 1'b1;
+         end
+         else if (enable_fire == 1'b1) // If enable_fire, then set op to 2.
+         begin
+		      plot = 1'b1;
 				counter_enable = 1'b1;
-		  	    	op = 2'b10;
-		     		enable_draw = 1'b1;
+		      op = 2'b10;
+		      enable_draw = 1'b1;
 				enable_wait = 1'b0;
-           		end
+           end
 		end
-		WAIT:
-			begin
-			plot = 1'b1;
-			counter_enable = 1'b0;
-			enable_draw = 1'b0;
-			enable_wait = 1'b1;
-			end
-		ERASE:
-			begin
-		        plot = 1'b1;
-		        counter_enable = 1'b1;
-             		op = 2'b01;
-            	 	enable_draw = 1'b1;
-			enable_wait = 1'b0;
-			end
-      		default:
-			begin
-			plot = 1'b1;
-			counter_enable = 1'b0;
-			enable_draw = 1'b0;
-			enable_wait = 1'b0;
-			op = 2'b00;
-			end
+		WAIT:begin
+			 plot = 1'b1;
+			 counter_enable = 1'b0;
+			 enable_draw = 1'b0;
+			 enable_wait = 1'b1;
+		end
+		ERASE:begin
+		       plot = 1'b1;
+		       counter_enable = 1'b1;
+             op = 2'b01;
+             enable_draw = 1'b1;
+				 enable_wait = 1'b0;
+		end
+      default:begin
+				plot = 1'b1;
+				counter_enable = 1'b0;
+				enable_draw = 1'b0;
+				enable_wait = 1'b0;
+				op = 2'b00;
+		end
 		endcase
 		
 	end

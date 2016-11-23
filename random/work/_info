@@ -7,15 +7,15 @@ z2
 !i10e 25
 !i10f 100
 cModel Technology
-Z0 d/h/u9/g6/00/xiezili2/258project/258project/random
+d/h/u9/g6/00/xiezili2/258project/258project/random
 vLFSR
-!s110 1479697299
+!s110 1479925824
 !i10b 1
-!s100 OOkC4@j=zc=CZfSa[gjko3
-I@l0nCNja6^dHc?G2dc?h52
+!s100 kg2b6NzN;XEF<VB5E?c@]3
+IE6QnT9m`LVeW8z@nhQWE52
 VDg1SIo80bB@j0V0VzS_@n1
-R0
-w1479697295
+d/h/u9/g6/00/xiezili2/258project/random
+w1479925773
 8LFSR.v
 FLFSR.v
 L0 1
@@ -23,7 +23,7 @@ OV;L;10.4d;61
 r1
 !s85 0
 31
-!s108 1479697299.000000
+!s108 1479925824.000000
 !s107 LFSR.v|
 !s90 -reportprogress|300|-timescale|1ns/1ns|LFSR.v|
 !i113 1

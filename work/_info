@@ -1,0 +1,30 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/h/u9/g6/00/xiezili2/258project
+venemy_datapath
+!s110 1479925029
+!i10b 1
+!s100 _EjDlYTD5d0WhEjC@Oml[3
+I@^kRC@EGGC:=nG35RX9_S3
+VDg1SIo80bB@j0V0VzS_@n1
+R0
+w1479785985
+8m2_datapath.v
+Fm2_datapath.v
+L0 1
+OV;L;10.4d;61
+r1
+!s85 0
+31
+!s108 1479925028.000000
+!s107 m2_datapath.v|
+!s90 -reportprogress|300|-timescale|1ns/1ns|m2_datapath.v|
+!i113 1
+o-timescale 1ns/1ns
