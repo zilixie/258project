@@ -1,6 +1,6 @@
 module control(
 				input [3:0] plane_amount,
-				input clk, reset_n,
+				input clk, reset_n, start,
 				input [1:0] flying_rate,
 				output [7:0] x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, 
 							 y0, y1, y2, y3, y4, y5, y6, y7, y8, y9,
@@ -11,14 +11,14 @@ module control(
 
 	wire [9:0] load_x, c_en, touch_edge, des;
 	wire [3:0] rand_int;
-	wire move_en;
+	wire move_en, reset_n_fsm;
 	
 	
 	random_int r0 (
 					.enable(load_x),
 					.out(rand_int),
 					.clk(clk),
-					.reset_n(reset_n)
+					.reset_n(reset_n_fsm)
 					);
 	
 	amount_control a0(
@@ -40,7 +40,9 @@ module control(
 			.load_coord(load_coord),
 			.datapath_en(enable_datapath),
 			.op(op),
-			.plot(plot)
+			.plot(plot),
+			.start(start),
+			.reset_n_out(reset_n_fsm)
 			);
 			
 	x_coord_reg xcrd0(
@@ -63,7 +65,7 @@ module control(
 							.move_en(move_en),
 							.des(des),
 							.flying_rate(flying_rate),
-							.reset_n(reset_n),
+							.reset_n(reset_n_fsm),
 							.clk(clk),
 							.touch_edge(touch_edge),
 							.y0(y0),

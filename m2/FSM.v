@@ -1,15 +1,18 @@
 module FSM(
-			  input clk, reset_n,
-			  output reg move_en, load_coord, datapath_en, plot,
+			  input clk, reset_n, start,
+			  output reg move_en, load_coord, datapath_en, plot, reset_n_out,
 			  output reg [1:0] op
 			  );
 				
-	localparam  S_DRAW  = 4'd0,
+	localparam  S_START  = 4'd0,
+					S_START_WAIT = 4'd7;
+					S_RESET = 4'd8;
 					S_ERASE = 4'd1,
 					S_WAIT  = 4'd2,
 					S_CHECK_OVER = 4'd3,
 					S_GAME_OVER = 4'd4,
-					S_LOAD_COORD = 4'd5;
+					S_DRAW = 4'd5;
+					S_LOAD_COORD = 4'd6;
 	// Wires
 	wire touch_edge = 1'b0; // Due to m2's design, touch_edge will always be low. Game will never over.
 	
@@ -23,6 +26,9 @@ module FSM(
 	always @(*)
 	begin
 		case (current_state)
+			S_START: next_state = start ? S_START_WAIT : S_START;
+			S_START_WAIT: next_state = start ? S_START_WAIT : S_RESET;
+			S_RESET: next_state = S_LOAD_COORD;
 			S_DRAW: next_state = done ? S_CHECK_OVER : S_DRAW;
 		   S_CHECK_OVER: next_state = touch_edge ? S_GAME_OVER : S_WAIT;
 			S_GAME_OVER: next_state = S_DRAW;
@@ -42,7 +48,11 @@ module FSM(
 		datapath_en = 1'b0;
 		done_en = 1'b0;
 		plot = 1'b0;
+		reset_n_out = 1'b1;
 		case(current_state)
+			S_RESET: begin
+				reset_n_out = 1'b0;
+				end
 			S_DRAW: begin
 				move_en = 1'b1;
 				op = 2'b00;
@@ -70,6 +80,16 @@ module FSM(
 			S_LOAD_COORD: begin
 				load_coord = 1'b1;
 				end
+			default: begin
+				move_en = 1'b0;
+				en_wait_counter = 1'b0;
+				op = 2'b00;
+				load_coord = 1'b0;
+				datapath_en = 1'b0;
+				done_en = 1'b0;
+				plot = 1'b0;
+				reset_n_out = 1'b1;
+				end
 		endcase
 	end
 	
@@ -77,7 +97,7 @@ module FSM(
 	always @(posedge clk)
 	begin
 		if(!reset_n)
-			current_state <= S_DRAW;
+			current_state <= S_LOAD_COORD;
 		else
 			current_state <= next_state;
 	end
@@ -93,14 +113,14 @@ module FSM(
 			w <= 21'd0;
 		else if (en_wait_counter)
 		begin
-			if (w == 21'd1666666) // real: 21'd1666666
+			if (w == 21'd1000) // real: 21'd1666666
 				w <= 21'd0;
 			else
 				w = w + 1'b1;
 		end
 	end
 	
-	assign go = (w == 21'd1666666) ? 1'b1 : 1'b0; // real: 21'd1666666
+	assign go = (w == 21'd1000) ? 1'b1 : 1'b0; // real: 21'd1666666
 	
 	// End
 	
@@ -114,13 +134,13 @@ module FSM(
 			done_c <= 8'd0;
 		else if (done_en)
 		begin
-			if (done_c == 8'd250) // real: 250
+			if (done_c == 8'd249) // real: 249
 				done_c <= 8'd0;
 			else
 				done_c <= done_c + 1'b1;
 		end
 	end
 	
-	assign done = (done_c == 8'd250) ? 1'b1 : 1'b0; // real: 250
+	assign done = (done_c == 8'd249) ? 1'b1 : 1'b0; // real: 249
 	
 endmodule

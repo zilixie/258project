@@ -15,4 +15,4 @@ force {SW} 4'b0001
 force {CLOCK_50} 0 0, 1 1 -repeat 2
 force {resetn} 0 0, 1 2
 
-run 300000
+run 1300000

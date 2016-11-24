@@ -78,26 +78,28 @@ module enemy_datapath(
 	always @(posedge clk)
 	begin
 		if (!reset_n)
-		begin
-			select <= 4'd0;
 			s_count <= 5'd0;
-		end
 		else if (enable)
 		begin
-			if (s_count == 5'd25)
-			begin
-				if (select == 4'd9)
-					select <= 4'd0;
-				else
-					begin
-						select <= select + 1'b1;
-						s_count <= 5'd0;
-					end
-         end
+			if (s_count == 5'd24)
+				s_count <= 5'd0;
 			else
 				s_count <= s_count +1'b1;
 		end
-		
+	end
+	
+	always @(posedge clk)
+	begin
+		if (!reset_n)
+			select <= 4'd0;
+		else if (s_count == 5'd24)
+		begin
+			if (select == 4'd9)
+				select <= 4'd0;
+			else
+				select <= select + 1'b1;
+		end
+			
 	end
 	
 	
@@ -137,18 +139,18 @@ module enemy_datapath(
 			x_buff = x3;
 			y_buff = y3;
                if (visible[3] == 1'b0)
-                  white = 3'b111;
-               else
                   white = 3'b000;
+               else
+                  white = 3'b111;
 			end
 			4'd4:
 			begin
 			x_buff = x4;
 			y_buff = y4; 
                if (visible[4] == 1'b0)
-							white = 3'b111;
-               else
 							white = 3'b000;
+               else
+							white = 3'b111;
 			end
 			4'd5:
 			begin
@@ -156,18 +158,18 @@ module enemy_datapath(
 			y_buff = y5;
 
                if (visible[5] == 1'b0)
-							white = 3'b111;
-               else
 							white = 3'b000;
+               else
+							white = 3'b111;
 			end
 			4'd6:
 			begin
 			x_buff = x6;
 			y_buff = y6; 
                if (visible[6] == 1'b0)
-							white = 3'b111;
-               else
 							white = 3'b000;
+               else
+							white = 3'b111;
 			end
 			4'd7:
 			begin
@@ -175,18 +177,18 @@ module enemy_datapath(
 			y_buff = y7;
  
                if (visible[7] == 1'b0)
-                  white = 3'b111;
-               else
                   white = 3'b000;
+               else
+                  white = 3'b111;
 			end
 			4'd8:
 			begin
 			x_buff = x8;
 			y_buff = y8;
                if (visible[8] == 1'b0)
-						white = 3'b111;
-               else
 						white = 3'b000;
+               else
+						white = 3'b111;
 			end
 			4'd9:
 			begin
@@ -195,7 +197,7 @@ module enemy_datapath(
                if (visible[9] == 1'b0)
 						white = 3'b000;
                else
-						white = 3'b000;
+						white = 3'b111;
 			end
 		endcase
 	end

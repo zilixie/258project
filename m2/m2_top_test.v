@@ -13,7 +13,7 @@ module m2
 	wire load_coord, enable_datapath;
 	wire [2:0] colour;
 	wire [7:0] x;
-	wire [6:0] y;
+	wire [7:0] y;
 	
 	// Control
 	control c0 

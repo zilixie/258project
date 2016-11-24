@@ -22,7 +22,7 @@ module y_coord_counter(
 	always @(*)
 	begin
 		case(flying_rate)
-			2'b00: counter_value = 24'd12499999;//12499999
+			2'b00: counter_value = 24'd4000;//12499999
 			2'b01: counter_value = 24'd6499999;
 			2'b10: counter_value = 24'd3999999;
 			2'b11: counter_value = 24'd1999999;
