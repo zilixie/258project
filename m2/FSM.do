@@ -14,5 +14,5 @@ add wave {/*}
 force {clk} 0 0, 1 1 -repeat 2
 force {reset_n} 0 0, 1 2
 
-run 100
+run 30000ns
  

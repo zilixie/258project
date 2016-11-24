@@ -13,9 +13,12 @@ module control(
 	wire [3:0] rand_int;
 	wire move_en;
 	
+	
 	random_int r0 (
-					.load_x(load_x),
-					.rand_int(rand_int)
+					.enable(load_x),
+					.out(rand_int),
+					.clk(clk),
+					.reset_n(reset_n)
 					);
 	
 	amount_control a0(
@@ -26,7 +29,8 @@ module control(
 						
 	destroy_handle d0(
 						.touch_edge(touch_edge),
-						.load_x(load_x)
+						.load_x(load_x),
+						.des(des)
 						);
 						
 	FSM f0(
@@ -37,11 +41,11 @@ module control(
 			.datapath_en(enable_datapath),
 			.op(op),
 			.plot(plot)
-			)
+			);
 			
 	x_coord_reg xcrd0(
 						.load_x(load_x),
-						.rand_int(rand_int)
+						.rand_int(rand_int),
 						.x0(x0),
 						.x1(x1),
 						.x2(x2),

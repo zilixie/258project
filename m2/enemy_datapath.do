@@ -2,7 +2,7 @@
 
 vlib work
 
-vlog -timescale 1ns/1ns m2_datapath.v
+vlog -timescale 1ns/1ns enemy_datapath.v
 
 vsim enemy_datapath
 
@@ -38,4 +38,4 @@ force {enable} 0 0, 1 2
 force {reset_n} 0 0, 1 2
 force {visible} 10'b0000000001
 
-run 100
+run 300ns

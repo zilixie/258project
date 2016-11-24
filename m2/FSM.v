@@ -5,17 +5,21 @@ module FSM(
 			  );
 				
 	localparam  S_DRAW  = 4'd0,
-		    S_ERASE = 4'd1,
-		    S_WAIT  = 4'd2,
-		    S_CHECK_OVER = 4'd3,
-		    S_GAME_OVER = 4'd4;
-					
-	wire touch_edge = 1'b0 // Due to m2's design, touch_edge will always be low. Game will never over.
+					S_ERASE = 4'd1,
+					S_WAIT  = 4'd2,
+					S_CHECK_OVER = 4'd3,
+					S_GAME_OVER = 4'd4,
+					S_LOAD_COORD = 4'd5;
+	// Wires
+	wire touch_edge = 1'b0; // Due to m2's design, touch_edge will always be low. Game will never over.
 	
-	reg done_en;
-	wire done;
+	reg done_en, en_wait_counter;
+	wire done, go;
 	
 	// State table
+	
+	reg [4:0] current_state, next_state;
+	
 	always @(*)
 	begin
 		case (current_state)
@@ -38,7 +42,7 @@ module FSM(
 		datapath_en = 1'b0;
 		done_en = 1'b0;
 		plot = 1'b0;
-		case
+		case(current_state)
 			S_DRAW: begin
 				move_en = 1'b1;
 				op = 2'b00;
@@ -51,7 +55,7 @@ module FSM(
 				op = 2'b01;
 				datapath_en = 1'b1;
 				done_en = 1'b1;
-				plot 1'b1;
+				plot = 1'b1;
 				end
 			S_CHECK_OVER: begin
 			
@@ -110,13 +114,13 @@ module FSM(
 			done_c <= 8'd0;
 		else if (done_en)
 		begin
-			if (done_c == 8'd250)
+			if (done_c == 8'd250) // real: 250
 				done_c <= 8'd0;
 			else
 				done_c <= done_c + 1'b1;
 		end
 	end
 	
-	assign done = (done_c == 8'd250) ? 1'b1 : 1'b0;
+	assign done = (done_c == 8'd250) ? 1'b1 : 1'b0; // real: 250
 	
 endmodule

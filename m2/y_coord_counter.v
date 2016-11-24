@@ -22,7 +22,7 @@ module y_coord_counter(
 	always @(*)
 	begin
 		case(flying_rate)
-			2'b00: counter_value = 24'd10;//12499999
+			2'b00: counter_value = 24'd12499999;//12499999
 			2'b01: counter_value = 24'd6499999;
 			2'b10: counter_value = 24'd3999999;
 			2'b11: counter_value = 24'd1999999;
@@ -44,7 +44,7 @@ module y_coord_counter(
 		end
 	end
 	
-	assign move = (m == 24'd0) ? 1 : 0;
+	assign move = (m == 24'd0) ? 1'b1 : 1'b0;
 	
 	// Y counter.
 	y_counter c0(.enable(c_en[0]), 
@@ -147,7 +147,7 @@ module y_counter(
 					  output touch_edge
 					  );
 	
-	always @(posedge clk, destroyed)
+	always @(posedge clk)
 	begin
 		if (!reset_n)
 			y_out <= 8'd0;
