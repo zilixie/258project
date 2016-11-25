@@ -5,13 +5,13 @@ module FSM(
 			  );
 				
 	localparam  S_START  = 4'd0,
-					S_START_WAIT = 4'd7;
-					S_RESET = 4'd8;
+					S_START_WAIT = 4'd7,
+					S_RESET = 4'd8,
 					S_ERASE = 4'd1,
 					S_WAIT  = 4'd2,
 					S_CHECK_OVER = 4'd3,
 					S_GAME_OVER = 4'd4,
-					S_DRAW = 4'd5;
+					S_DRAW = 4'd5,
 					S_LOAD_COORD = 4'd6;
 	// Wires
 	wire touch_edge = 1'b0; // Due to m2's design, touch_edge will always be low. Game will never over.
@@ -97,7 +97,7 @@ module FSM(
 	always @(posedge clk)
 	begin
 		if(!reset_n)
-			current_state <= S_LOAD_COORD;
+			current_state <= S_START;
 		else
 			current_state <= next_state;
 	end

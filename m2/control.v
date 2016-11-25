@@ -57,7 +57,9 @@ module control(
 						.x6(x6),
 						.x7(x7),
 						.x8(x8),
-						.x9(x9)
+						.x9(x9),
+						.reset_n(reset_n_fsm),
+						.clk(clk)
 						);
 						
 	y_coord_counter ycrd0(

@@ -1,7 +1,8 @@
 module m2
 	(
 	input [9:0]SW,
-	input CLOCK_50
+	input CLOCK_50,
+	input [3:0]KEY
 	);	
 	
 	// Wires
@@ -22,6 +23,7 @@ module m2
 			.clk(CLOCK_50), 
 			.reset_n(resetn),
 			.flying_rate(SW[5:4]),
+			.start(KEY[1]),
 			.x0(x0), 
 			.x1(x1), 
 			.x2(x2), 

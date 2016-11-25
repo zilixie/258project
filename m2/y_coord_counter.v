@@ -153,15 +153,13 @@ module y_counter(
 			y_out <= 8'd0;
 		else if (enable & move)
 			begin
-			if (y_out == 8'd120)
+			if (destroyed)
 				y_out <= 8'd0;
 			else
 				y_out = y_out + 1'b1;
 			end
-		else if (destroyed)
-			y_out <= 8'd0;
 	end
 
-	assign touch_edge = (y_out == 8'd120) ? 1'b1 : 1'b0;
+	assign touch_edge = (y_out == 8'd114) ? 1'b1 : 1'b0;
 	
 endmodule
