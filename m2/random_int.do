@@ -11,9 +11,8 @@ log {/*}
 add wave {/*}
 
 #test
-force {clk} 0 0, 1 1 -repeat 2
-force {reset_n} 1 0, 0 2
-force {enable} 0 0, 0 2, 10'd1 4, 0 6, 10'd10 8, 0 10
+force {reset_n} 0 0, 1 2
+force {load_x} 0 0, 0 2, 10'd1 4, 0 6, 10'd10 8, 0 10, 10'd10 16, 0 20, 10'd10 24, 0 30
 
 
 run 100ns
