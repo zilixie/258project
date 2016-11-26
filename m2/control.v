@@ -15,9 +15,8 @@ module control(
 	
 	
 	random_int r0 (
-					.enable(load_x),
+					.load_x(load_x),
 					.out(rand_int),
-					.clk(clk),
 					.reset_n(reset_n_fsm)
 					);
 	
