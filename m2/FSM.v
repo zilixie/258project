@@ -113,14 +113,14 @@ module FSM(
 			w <= 21'd0;
 		else if (en_wait_counter)
 		begin
-			if (w == 21'd1666666) // real: 21'd1666666
+			if (w == 21'd2000) // real: 21'd1666666
 				w <= 21'd0;
 			else
 				w = w + 1'b1;
 		end
 	end
 	
-	assign go = (w == 21'd1666666) ? 1'b1 : 1'b0; // real: 21'd1666666
+	assign go = (w == 21'd2000) ? 1'b1 : 1'b0; // real: 21'd1666666
 	
 	// End
 	
