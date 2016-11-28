@@ -11,7 +11,7 @@ log {/*}
 add wave {/*}
 
 #test
-force {des} 0 0, 1 1 -repeat 2
+force {des} 10'b0000000000 0, 10'b0000000001 1 -repeat 2
 force {reset_n} 0 0, 1 2
 
 run 300 
