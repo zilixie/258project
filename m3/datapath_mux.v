@@ -18,20 +18,14 @@ module datapath_mux
         	1'b0: begin
 			x = x_self;
 			y = y_self;
-			color = color_self;
+			color = color_enemy;
                       end
                 1'b1: begin
 			x = x_enemy;
 			y = y_enemy;
 			color = color_enemy;
                       end
-<<<<<<< HEAD
-
-	endcase
-        end
-=======
 		endcase
 		end
->>>>>>> 76f72a35b46e875ba226f6ddf97dea367cfb542c
 endmodule
 
