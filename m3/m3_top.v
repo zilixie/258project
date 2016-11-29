@@ -24,7 +24,7 @@ module m3_top
 	(
 	.clk(clk),
 	.reset_n(reset_n), 
-	.start(KEY[2]), 
+	.start(~KEY[2]), 
 	.touch_edge(touch_edge),
 	.move_en(move_en), 
 	.load_coord(load_coord), 
@@ -157,13 +157,16 @@ module m3_top
 	.y9(y9)
 	);
 	
-	time_control t0
+	/*time_control t0
 	(
 	.enable(en_time_control), 
 	.clk(clk),
 	.plane_amount(plane_amount),
 	.flying_rate(flying_rate)
-	);
+	);*/
+	
+	assign plane_amount = 4'd2;
+	assign flying_rate = 2'b00;
 	
 	random_int r0
 	(
@@ -195,6 +198,5 @@ module m3_top
 	.plane_amount(plane_amount),
 	.vis(vis)
 	);
-	
 	
 endmodule
