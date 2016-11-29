@@ -25,6 +25,7 @@ module datapath_mux
 			y = y_enemy;
 			color = color_enemy;
                       end
-
+		endcase
+		end
 endmodule
 
