@@ -14,4 +14,4 @@ add wave {/*}
 force {clk} 0 0, 1 1 -repeat 2
 force {enable} 1 0
 
-run 300  
+run 3000
