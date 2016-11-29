@@ -70,7 +70,7 @@ module FSM
 		enemy_done_en     = 1'b0;
 		plot              = 1'b0;
 		reset_n_out       = 1'b1;
-		self_state        = 1'b1;
+		self_state        = 1'b0;
 		datapath_select   = 1'b0;
 		en_time_control   = 1'b0;
 		

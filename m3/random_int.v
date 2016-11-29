@@ -7,8 +7,7 @@ module random_int
 	); 
 
   	wire feedback; 
- 	 
- 	assign enable = 1'b1; 
+
  	reg q; 
  	 
  	// Enable signal genrator 

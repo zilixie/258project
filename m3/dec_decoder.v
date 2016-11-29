@@ -82,7 +82,7 @@ module dec_decoder
 			des_count = des_count + 1'b1;
 		end
 	end
-endmodule;
+endmodule
 
 
 

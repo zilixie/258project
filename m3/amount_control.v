@@ -20,6 +20,7 @@ module amount_control
 			4'd8: vis  = 10'b0011111111;
 			4'd9: vis  = 10'b0111111111;
 			4'd10:vis  = 10'b1111111111;
+			default: vis  = 10'b0000000001;
 		endcase
 	end
 	
