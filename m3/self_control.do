@@ -16,6 +16,6 @@ force {reset_n} 0 0, 1 2
 force {KEY[0]} 1 0, 0 50, 1 250
 force {KEY[1]} 1 0, 0 254, 1 500
 force {KEY[3]} 1 0, 0 504, 1 800
-force {self_state} 4'd1 0
+force {self_state} 4'd1 0, 4'd0 900
 
 run 1000

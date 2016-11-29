@@ -18,6 +18,9 @@ module self_control(
 		self_enable = 1'b0;
 		op = 2'b00;
 		case (self_state)
+		4'd0:begin
+		
+			end
 		4'd1: begin
 			if (enable_fire == 1'b0)
 				begin

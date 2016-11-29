@@ -14,5 +14,6 @@ add wave {/*}
 force {clk} 0 0, 1 1 -repeat 2
 force {reset_n} 0 0, 1 2
 force {start} 0 0, 1 10, 0 50
+force {touch_edge} 10'd0 0
 
 run 30000ns

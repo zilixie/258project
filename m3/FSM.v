@@ -1,6 +1,7 @@
 module FSM
 	(
-	input clk, reset_n, start, game_is_over,
+	input clk, reset_n, start, 
+	input [9:0] touch_edge,
 	output reg move_en, load_coord, enemy_datapath_en, plot, reset_n_out, en_time_control,
 	output reg [1:0] enemy_op,
 	output reg [3:0] self_state,
@@ -44,7 +45,7 @@ module FSM
 			S_SELF_DRAW: next_state = self_done ? S_ENEMY_DRAW : S_SELF_DRAW;
 			S_ENEMY_DRAW: next_state = enemy_done ? S_CHECK_OVER : S_ENEMY_DRAW;
 			// Check game over.
-			S_CHECK_OVER: next_state = game_is_over ? S_GAME_OVER : S_WAIT;
+			S_CHECK_OVER: next_state = (touch_edge == 10'd0) ? S_WAIT : S_GAME_OVER;
 			// Wait 0.25 sec.
 			S_WAIT: next_state = go ? S_SLEF_ERASE : S_WAIT;
 			// Erase
@@ -147,54 +148,54 @@ module FSM
 		self_draw_count <= 5'd0;
 	else if (self_done_en == 1'b1)
 		begin
-		if (self_draw_count == 5'd25)
+		if (self_draw_count == 5'd24)
 			self_draw_count <= 5'd0;
 		else
 			self_draw_count = self_draw_count + 1'b1;
 		end
 	end
    
-	assign self_done = (self_draw_count == 5'd25) ? 1'b1 : 1'b0;
+	assign self_done = (self_draw_count == 5'd24) ? 1'b1 : 1'b0;
 	
 	// Wait counter.
 	/* Generate "go" signal. "go" signal should be generate after 
 	   "en_wait_counter" is high for 1/30s. */
-	reg [20:0] w;
+	reg [20:0] wait_count;
 	
 	always @(posedge clk)
 	begin
 		if (!reset_n)
-			w <= 21'd0;
+			wait_count <= 21'd0;
 		else if (en_wait_counter)
 		begin
-			if (w == 21'd4000) // real: 21'd1666666
-				w <= 21'd0;
+			if (wait_count == 21'd4000) // real: 21'd1666666
+				wait_count <= 21'd0;
 			else
-				w = w + 1'b1;
+				wait_count = wait_count + 1'b1;
 		end
 	end
 	
-	assign go = (w == 21'd4000) ? 1'b1 : 1'b0; // real: 21'd1666666
+	assign go = (wait_count == 21'd4000) ? 1'b1 : 1'b0; // real: 21'd1666666
 	
 	// End
 	
 	// Done counter.
 	
-	reg [7:0] done_c;
+	reg [7:0] enemy_done_count;
 	
 	always @(posedge clk)
 	begin
 		if (!reset_n)
-			done_c <= 8'd0;
+			enemy_done_count <= 8'd0;
 		else if (enemy_done_en)
 		begin
-			if (done_c == 8'd249) // real: 249
-				done_c <= 8'd0;
+			if (enemy_done_count == 8'd249) // real: 249
+				enemy_done_count <= 8'd0;
 			else
-				done_c <= done_c + 1'b1;
+				enemy_done_count <= enemy_done_count + 1'b1;
 		end
 	end
 	
-	assign enemy_done = (done_c == 8'd249) ? 1'b1 : 1'b0; // real: 249
+	assign enemy_done = (enemy_done_count == 8'd249) ? 1'b1 : 1'b0; // real: 249
 	
 endmodule
