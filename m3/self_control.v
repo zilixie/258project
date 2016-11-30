@@ -57,7 +57,7 @@ module self_control(
 	else
 		begin
 		if (read_btn_c == 28'd0)
-			read_btn_c <= 28'd100; // real: d24999999
+			read_btn_c <= 28'd1000; // real: d24999999
 		else
 			read_btn_c <= read_btn_c - 1'b1;
 		end
@@ -87,7 +87,7 @@ module self_control(
 	else
 		begin
 		if (read_fire_c == 28'd0)
-			read_fire_c <= 28'd100; // real: d50000000
+			read_fire_c <= 28'd1000; // real: d50000000
 		else
 			read_fire_c <= read_fire_c - 1'b1;
 		end
@@ -96,14 +96,14 @@ module self_control(
 	assign read_fire_en = (read_fire_c == 28'd0) ? 1'b1 : 1'b0;
 	
 	// Fire register.
-   always @(posedge clk)
-   begin
-   if(!reset_n)
+	always @(posedge clk)
+	begin
+	if(!reset_n)
 		enable_fire <= 1'b0;
 	else if (~KEY[3] & read_fire_en)
 		enable_fire <= 1'b1;
 	else if (stop_fire == 1'b1)
-	   enable_fire <= 1'b0;
+		enable_fire <= 1'b0;
 	end
 	
 	// Every fire remain for 0.25 sec.
@@ -113,13 +113,13 @@ module self_control(
       fire_count <= 25'd0;
 	else if (enable_fire == 1'b1)
 		begin
-		if (fire_count == 25'd25) // real: d1249999
+		if (fire_count == 25'd25000) // real: d1249999
 			fire_count <= 25'd0;
 		else
 			fire_count = fire_count + 1'b1;
 		end
 	end
 	
-	assign stop_fire = (fire_count == 25'd25) ? 1'b1 : 1'b0; // real: d1249999
+	assign stop_fire = (fire_count == 25'd25000) ? 1'b1 : 1'b0; // real: d1249999
 
 endmodule
