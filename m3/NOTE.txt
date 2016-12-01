@@ -1,0 +1,8 @@
+vga_adapter.v
+vga_address_translator.v
+vga_controller.v
+vga_pll.v
+black.mif
+vga_adapter.bsf
+
+are NOT written by xinghuad or xiezili.

@@ -1,13 +1,13 @@
 module dec_decoder
 	(
 	input [9:0] des, 
-        input reset_n,
+	input reset_n,
 	output [6:0] HEX0, HEX1, HEX2, HEX3
 	);
 	// Display score in decimal on HEX, every posedge of "des", number
 	// increase by 1.
 
-        reg [15:0] des_count = 16'd0;
+	reg [15:0] des_count = 16'd0;
 	reg q;
 
         hex_decoder H0(
@@ -44,42 +44,42 @@ module dec_decoder
 
 	always @(posedge q)
 	begin
-	if (reset_n == 1'b0)
-		des_count <= 16'd0;
-	else
-		begin
-                if (des_count[15:12] == 4'b1001 && des_count[11:8] == 4'b1001 && des_count[7:4] == 4'b1001 && des_count[3:0] == 4'b1001)
-                        begin
-                                des_count[3:0] <= 4'b0000;
-				des_count[7:4] <= 4'b0000;
-                        	des_count[11:8] <= 4'b0000;
-                        	des_count[15:12] <= 4'b0000;
-                        end
-
-                else if (des_count[11:8] == 4'b1001 && des_count[7:4] == 4'b1001 && des_count[3:0] == 4'b1001)
-                        begin
-                                des_count[3:0] <= 4'b0000;
-				des_count[7:4] <= 4'b0000;
-                        	des_count[11:8] <= 4'b0000;
-                        	des_count[15:12] = des_count[15:12] + 4'b0001;
-                        end
-
-                else if (des_count[7:4] == 4'b1001 && des_count[3:0] == 4'b1001)
-                        begin
-                                des_count[3:0] <= 4'b0000;
-				des_count[7:4] <= 4'b0000;
-                        	des_count[11:8] = des_count[11:8] + 4'b0001;
-                        end
-
-                else if (des_count[3:0] == 4'b1001)
-                        begin
-				des_count[3:0] <= 4'b0000;
-                        	des_count[7:4] = des_count[7:4] + 4'b0001;
-                        end
-
+		if (reset_n == 1'b0)
+			des_count <= 16'd0;
 		else
-			des_count = des_count + 1'b1;
-		end
+			begin
+				if (des_count[15:12] == 4'b1001 && des_count[11:8] == 4'b1001 && des_count[7:4] == 4'b1001 && des_count[3:0] == 4'b1001)
+					begin
+						des_count[3:0] <= 4'b0000;
+						des_count[7:4] <= 4'b0000;
+						des_count[11:8] <= 4'b0000;
+						des_count[15:12] <= 4'b0000;
+					end
+
+				else if (des_count[11:8] == 4'b1001 && des_count[7:4] == 4'b1001 && des_count[3:0] == 4'b1001)
+					begin
+						des_count[3:0] <= 4'b0000;
+						des_count[7:4] <= 4'b0000;
+						des_count[11:8] <= 4'b0000;
+						des_count[15:12] = des_count[15:12] + 4'b0001;
+					end
+
+				else if (des_count[7:4] == 4'b1001 && des_count[3:0] == 4'b1001)
+					begin
+						des_count[3:0] <= 4'b0000;
+						des_count[7:4] <= 4'b0000;
+						des_count[11:8] = des_count[11:8] + 4'b0001;
+					end
+
+				else if (des_count[3:0] == 4'b1001)
+					begin
+						des_count[3:0] <= 4'b0000;
+						des_count[7:4] = des_count[7:4] + 4'b0001;
+					end
+
+				else
+					des_count = des_count + 1'b1;
+			end
 	end
 endmodule
 

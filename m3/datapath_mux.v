@@ -12,22 +12,22 @@ module datapath_mux
         //0: self_datapath
         //1: enemy_datapath
 
-        always@(*)
-        begin
-        case(datapath_select)
-        	1'b0: begin
+	always@(*)
+		begin
+		case(datapath_select)
+        	1'b0: 
+			begin
 			x = x_self;
 			y = y_self;
 			color = color_self;
-                      end
-                1'b1: begin
+			end
+			1'b1: 
+			begin
 			x = x_enemy;
 			y = y_enemy;
 			color = color_enemy;
-                      end
-
-
-	endcase
-        end
+			end
+		endcase
+		end
 endmodule
 
