@@ -168,14 +168,14 @@ module FSM
 			wait_count <= 21'd0;
 		else if (en_wait_counter)
 		begin
-			if (wait_count == 21'd4000) // real: 21'd1666666
+			if (wait_count == 21'd1666666) // real: 21'd1666666
 				wait_count <= 21'd0;
 			else
 				wait_count = wait_count + 1'b1;
 		end
 	end
 	
-	assign go = (wait_count == 21'd4000) ? 1'b1 : 1'b0; // real: 21'd1666666
+	assign go = (wait_count == 21'd1666666) ? 1'b1 : 1'b0; // real: 21'd1666666
 	
 	// End
 	

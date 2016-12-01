@@ -23,7 +23,7 @@ module self_datapath
 	begin
 		if (!reset_n)
 		begin
-			x <= 8'd80;
+			x <= 8'd82;
 			y <= 8'd110;
 		end
 		else if (load == 1'b1)

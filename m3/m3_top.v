@@ -157,16 +157,13 @@ module m3_top
 	.y9(y9)
 	);
 	
-	/*time_control t0
+	time_control t0
 	(
 	.enable(en_time_control), 
 	.clk(clk),
 	.plane_amount(plane_amount),
 	.flying_rate(flying_rate)
-	);*/
-	
-	assign plane_amount = 4'd2;
-	assign flying_rate = 2'b00;
+	);
 	
 	random_int r0
 	(

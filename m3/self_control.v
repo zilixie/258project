@@ -57,7 +57,7 @@ module self_control(
 	else
 		begin
 		if (read_btn_c == 28'd0)
-			read_btn_c <= 28'd1000; // real: d24999999
+			read_btn_c <= 28'd24999999; // real: d24999999
 		else
 			read_btn_c <= read_btn_c - 1'b1;
 		end
@@ -87,7 +87,7 @@ module self_control(
 	else
 		begin
 		if (read_fire_c == 28'd0)
-			read_fire_c <= 28'd1000; // real: d50000000
+			read_fire_c <= 28'd49999999; // real: d50000000
 		else
 			read_fire_c <= read_fire_c - 1'b1;
 		end
@@ -113,13 +113,13 @@ module self_control(
       fire_count <= 25'd0;
 	else if (enable_fire == 1'b1)
 		begin
-		if (fire_count == 25'd25000) // real: d1249999
+		if (fire_count == 25'd1249999) // real: d1249999
 			fire_count <= 25'd0;
 		else
 			fire_count = fire_count + 1'b1;
 		end
 	end
 	
-	assign stop_fire = (fire_count == 25'd25000) ? 1'b1 : 1'b0; // real: d1249999
+	assign stop_fire = (fire_count == 25'd1249999) ? 1'b1 : 1'b0; // real: d1249999
 
 endmodule
