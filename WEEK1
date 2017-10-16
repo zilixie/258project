@@ -243,6 +243,7 @@ Week3
 38, MTU: maximum transmission Unit.
 	Fragmentation(分裂)：router fragments the IP datagram into multiple
 	从header开始，offset=0 more flag=1到尾处offset>0 more flag=0
+	offset is the data sum length of pkt sent before this segment / 8
 
 39, IP (Version 4) addresses are 32 bits long
 	IPv6 128bit
