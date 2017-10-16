@@ -289,6 +289,11 @@ Forwarding: data plane,Directing a data packet to an outgoing link  Individual
 	loop: find w not in S with the smallest D(w), add w to S, 
 	update D(v) for all v adjacent to w and not in S, D(v) = min{D(v), D(w) + c(w,v)}, until all nodes in S
 
+49, compare LS and DV
+msg complexity --> LS: n node E link, msg send O(nE); DV: Converges time varies
+speed of converge --> LS: O(n^2) algo requires O(nE) msg send; DV: Converges time varies
+if router broken --> LS: node can advertise incorrect link cost,each node only comput its own table; 
+		DV:node can advertise incorrect path cost,each node table used by others.
 midterm: def, lpm(Longest prefix match), delay, bellmanford, crc, 
 
 
