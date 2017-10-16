@@ -1,0 +1,300 @@
+1,  No time guarantee
+	No guarantee of delivery in sequence
+	-things get lost
+	-need transmission
+2,
+	Application layer: user interface
+	Transport layer: OS layer
+			 Provides reliable, in-sequence delivery of data from
+			 end-to-end on behalf of application
+	Network layer: Provides “best-effort”, but unreliable, delivery of
+		       datagrams.
+	Link layer: Carries data over (usually) point-to-point links between
+		    hosts and routers; or between routers and routers.
+
+3,
+	FTP = File Transfer Protocol
+	 --------------------       -----------------------------------------
+	|APP                 | —-> |OS     2, 3, 4                           |
+	 --------------------       -----------------------------------------
+	1, Application requests        2, Creates TCP “Connection setup” packet
+	TCP connection with B.            TCP requests IP packet to be sent to “B” 
+										    TCP packet: TCP data(empty) + 
+										    TCP hdr : type=connection setup
+
+   3, Creates IP packet with correct addresses.
+      IP requests ethernet packet to be sent to router.
+      		IP data = TCP packet
+      		IP packet = IP data + IP hdr
+      		IP hdr has: Destination Address: IP “B”, Source Address: IP “A”, protocal: TCP (previous level protocol)
+
+   4, Creates MAC frame with Frame Check Sequence
+      Wait for Access to the line.
+      MAC requests PHY to send each bit of the frame
+      		Destination Address: MAC “R1”, Source Address: MAC “A”, Protocol = IP
+      		+FCS (to get the dest MAC: use ARP req)
+	 --------------------       ----------
+	| OS                 | --> |Router    |
+	 --------------------       ----------
+		5, Accept MAC frame, check address and Frame Check Sequence (FCS).
+		   Pass data to IP Protocol.
+
+		6, Use IP destination address to decide where to send packet next (“next-hop routing”).
+		   Request Link Protocol to transmit packet.
+
+		7, same as 4 but with diff dest and source.
+
+	 ----------------------------------------------------  
+	|Router                                              | 
+	 ----------------------------------------------------   
+	 16, create MAC frame with FCS and correct address. 
+	     wait for access in lineprotocol
+	     request PHY to send each bit of the frame.	
+	 -----------
+--->|   OS      |
+	 -----------
+   17, accept the frame and pass data to IP
+   18, verify IP  addr  
+	   decapsulate TCP packet from IP packet.
+	   Pass TCP packet to TCP Protocol.
+   19, Accepts TCP “Connection setup” packet
+       Establishes connection by sending “Ack”.
+
+4, layer
+	source: 
+			application layer: raw data (message)
+			transport layer: tcp packet (segment)
+			network layer: ip packet
+				(physical layer)
+			network layer: ip packet (datagram) == (layer 3)
+			link layer: erthernet packet\MAC frame (frame) == (layer 2)
+			physical layer: bit
+
+	router: 
+			network layer: ip packet (datagram)
+			link layer: erthernet packet\MAC frame (frame)
+			physical layer: bit
+
+	switch:
+			link layer: erthernet packet\MAC frame (frame)
+			physical layer: bit
+
+	Router之间是用IP packet来传消息的。在network layer
+	switch 之间用frame传。
+4.1
+	why do we need layering???
+		1, explicit structure allows identification, relationship of
+			complex system’s pieces
+		2, easy maintain update system
+		3,Layering makes design, implementation and testing easier.
+		4,fault in a particular layer won't affect the function of any other layer.
+
+4.5
+	circuit switching: method used by the telephone network, Establish circuit, communicate, close
+	packet switching:method used by the Internet. Each packet is individually routed, use router's routing table, Different packets may take different paths. A packet switch has buffers.
+4.6 
+why packet switching? Efficient use of expensive links, links are expensive, allow bursty flows to share the same link efficiently. Resilience to failure of links & routers
+5, 
+	Is layering the best approach?
+		good: Simplifies design
+		bad: but, limited and inflexible
+
+	Packet switching
+		good: Enables statistical multiplexing
+		bad: We need extremely fast routers
+6, datagram --> encapsulate --> frame
+ (network layer)             (link/phy layer)
+
+7, 
+	router之间传信息link layer and phy layer用ip packet
+
+8, link layer implement in each host and router
+	sending side:
+		encapsulates datagram in frame
+	 	adds error checking bits, rdt, flow control, etc
+	receiving side
+ 		looks for errors, rdt, flow control, etc.
+ 		extracts datagram, passes to upper layer at receiving side
+
+9, wireless link
+		decreased signal strength
+		interference(干扰) from other sources
+		multipath propagation(传播)
+
+10, MB = megabyte, Mb = megebit
+	1 byte = 8 bit
+
+
+11, bandwidth: Gbps 每秒钟通过的bit
+	bandwidth delay = message size in bit / bandwidth in bit (把数据放入link里画的时间)
+	propogation delay = distance / speed of light in media (数据在link里面传输的时间)
+	latency = transmission + propogation
+12, RTT 2x propogation delay;
+13, delay bandwidth product: Tells us how much data can be sent before a receiver sees any of it.
+14, switch, single switch multi switch: 看有几个switch划分出几个link，每一个link要计算transmission delay和propagation delay
+	cut through switching: 在通过switch的时候，只对前200bit产生transmission delay. 即原来是：2x(transmission delay + propogation delay)
+	现在变成：transmission delay + 2x propogation delay + 200bit的 transmission delay
+
+15, NRZ: bit高就是1，低就是0
+		bad: How do we distinguish consecutive 0s or 1s
+			 If we sample at the wrong time we get garbage
+		solution: Send separate clock signal
+				  Embed clock signal in data signal
+				  keep msg short
+	NRZI: bit=1 revert, bit=0 keep
+	Machester coding: bit=0 low to high, bit=1 high to low
+				Signal rate is twice the bit rate
+				use 10Mbps
+				good: self-clocking, clock is embedded in signal
+					  X-OR of NRZ encoded data with the clock
+				bad: 50% efficiency
+16, Breaking message into packets allows parallel transmission across all links, 
+	reducing end to end latency. It also prevents a link from being “hogged” for a
+	long time by one message.(图)
+17, actual end to end latency: transmission delay + propogation delay + queue delay
+	because the egress link is not necessarily free when a packet arrives, it may be queued in a buff
+18, detect and correct error
+	ARQ: auto repeat request
+	FEC:forward error correction
+	detect: adv:Requires smaller number of bits/overhead; Requires less/simpler processing.
+	correct: adv:reduces number of retransmissions
+	detect: parity, Checksums, crc, correct: hamming
+
+19, hamming distance: length d+1 then d errors can be detect. length 2d+1 then d
+	errors can be correct
+	hamming code: 在1，2，4..位置插入0。1，3，5..xor得到1的值。2，3，6，7..xor得到2的值。
+	收到验码再做一次相同操作，位置reverse.
+	parity: total num of 1 is even, detect an odd number of bit errors. no correct
+	2D parity: Corrects all 1 bit errors, Detects all 1, 2, 3 bit errors, and many 		errors with >3 bits.
+	Checksum: is the 1s complement of the 1s complement sum of the data interpreted 16 bits at a time. 把checksum加到原本数据最后再1s complement一次，如果正确，得到全是0
+
+	CRC: message, generator, generator's degree, concate 0s. divide generator, get remainder, concate remainder to message. 这个concate message再除以generator 应该得到0.
+
+20, APP: HTTP, SMTP(send email), FTP(file)
+	Transport: TCP(socket), UDP
+	Network: IP, ARP, ICMP
+	Link: PPP(point-to-point, phone)
+
+20.5 Throughput: Measure of system’s ability to “pump out” data
+	 Throughput = Transfer Size / Transfer Time
+
+21 why do we need layering???
+		1, it allows widespread code and implementation re-use
+		1, explicit structure allows identification, relationship of
+			complex system’s pieces
+		2, easy maintain update system
+		3,Layering makes design, implementation and testing easier.
+		4,fault in a particular layer won't affect the function of any other layer.
+
+Week3
+22, CSMA/CD: 
+	carrier sense: wait for link to be idle
+	collision detect: listen while transmitting, send jam signal back if collision
+	random access: exponential back-off, after mth, choose k from 0,..2^(m-1)
+23, enthernet: Max length of the wire: 2500 meters
+	min length of the packet: 512 bits (64 bytes
+24,	Physical layer: electrical signals (repeaters and hubs)
+ 	Link layer: frames (bridges and switches)  
+	Network layer: packets (routers)
+	Transport layer: TCP hdr
+
+25, repeater: Distance limitation in local-area networks, signal becomes weaker. join LANstogether, 
+	monitors electrical signals, amplify
+26, HUBs: Joins multiple input lines electrically
+27, Their limitation: large collision domain bit is sent everywhere.
+					Cannot support multiple LAN technologies
+					Limitations on maximum nodes and distances
+28, Bridges(link layer): Connects two or more LANs at the link layer
+					Extracts destination address from the frame
+					Looks up the destination in a table
+					forward
+29, Switch(link layer): connect hosts, not LANs, connects individual 
+	computers, support concurrent communication
+30, adv of repeaters and hub: Only forwards frames as needed, apply CSMA/CD
+	disadv of :Delay in forwarding frames, Need to learn where to forward frames, Highercost
+31 cut-through switching: 
+		Buffering a frame takes time
+		Start transmitting as soon as possible, 
+		Inspect the frame header and do the look-up, 
+		If outgoing link is idle, start forwarding the frame
+32 dedicate access: Host has direct connection to the switch
+   Full duplex: Each connection can send in both directions
+   				Host sending to switch, and host receiving from switch
+   				avoids collisions
+33, Self Learning: Building the Table:
+		inspect the source MAC address
+		Associate the address with the incoming interface
+		Store the mapping in the switch table
+34, if entry found for destination
+	then {
+		if dest on segment from which frame arrived
+		then drop the frame
+		else forward the frame on interface indicated
+	} else flood
+
+35, flood can lead to loop, spanning tree is soln to this.
+36, 					hub vs router vs switch
+	traffic isolation.  no.    yes.     yes
+	plug & play         yes     no      yes
+	optimal routing     no     yes      no
+	cut through         yes     no      yes
+37, IP的特性: connectionless, unreliable, best effort, datagram
+	may drop packet, individually routed
+38, MTU: maximum transmission Unit.
+	Fragmentation(分裂)：router fragments the IP datagram into multiple
+	从header开始，offset=0 more flag=1到尾处offset>0 more flag=0
+
+39, IP (Version 4) addresses are 32 bits long
+	IPv6 128bit
+ 	Every interface has a unique IP address
+ 	IP address 是分层的
+40, IP addr class:
+	A:0+ 7 bit netID + 24 bit HostID, 
+	B:10+ 14 bit netID + 16 bit HostID, 
+	C:110+ 21bit netID + 8 bit HostID
+	有人觉得class C 的host id太少了，class B的 Net ID又总共只有16000个
+	soln: 第一种是subnetting, 分一些class B的host ID给net ID用。通过 netmask的途径。 例如128.100.3.0/24。第二种是CIDR,classless inter domain routing. Prefix aggregation: ISP serves 128.9.14.0/24 and 128.9.15.0/24, it can tell other routers to send it all packets belonging to the prefix 128.9.14.0/23.
+
+41, DNS(domain name system): Names are hierarchical, each domain has a root
+	server, each app need a IP addr as DNS client.
+42, clinet --> .edu ---> scut.edu --. news.scut.edu
+	Client asks local server. If local server does not have address, it asks the root server of the requested domain. Addresses are cached in case they are requested again
+43, ICMP:used by hosts & routers to communicate network- level information
+	network-layer “above” IP:  ICMP msgs carried in IP datagrams
+	ICMP message: type, code plus first 8 bytes of IP datagram causing error
+
+44, Forwarding in a IP router
+	Lookup packet DA in forwarding table.  If known, forward to correct port.If unknown, drop packet. Decrement TTL, update header Checksum.  Forward packet to outgoing interface. Transmit packet onto link.
+45 区分Separate table entry per addr和Separate Entry class baesd address
+	前者if a router had a forwarding entry per IP address, Match destination address of incoming packet。 后者if the router had an entry per class based prefix. Identify the mask automatically from the address, Then, look in the forwarding table for the match.
+46 CIDR make forwarding hard, 因为有很多ip addr可能会被match
+
+47, LPM!! router的pkt forward去哪里呢？ longest prefix match, match 最长的那个prefix对应的port上
+47.5 Forwarding 和routing的区别：
+Forwarding: data plane,Directing a data packet to an outgoing link  Individual router using a forwarding table
+Routing:controlplane, Computing paths the packets will follow, Routers talking amongst themselves, Individual router creating a routing table
+
+48, 创建routong table的3 个方法(告诉router next hop是啥)：
+	1，直接flood, 简单，每个dest都能到，但是inefficient，有循环，收到packet multiple time
+	2，Distance vector: Distributed Bellman Ford Algorithm:
+	c(x,v) = cost for direct link from x to v
+ 	Dx(y) = estimate of least cost from x to y(each other vectors)
+ 	Node x maintains distance vector Dx = [Dx(y): y є N ] 
+	and Dv = [Dv(y): y є N ] and c(x,v).
+ 	Each node v periodically sends Dv to its neighbors and neighbors update 	their own distance vectors Dx(y) ← minv{c(x,v) + Dv(y)} 
+	for each node y ∊ N, over time, the distance vector Dx converges
+
+	3，Link state: Dijkstra’s Shortest Path First-based Algorithm:
+	init: S={u}, for all nodes v, if v adjance to u {D(v) = c(u,v) else D(v) = inf}
+	loop: find w not in S with the smallest D(w), add w to S, 
+	update D(v) for all v adjacent to w and not in S, D(v) = min{D(v), D(w) + c(w,v)}, until all nodes in S
+
+midterm: def, lpm(Longest prefix match), delay, bellmanford, crc, 
+
+
+
+
+
+
+
+
