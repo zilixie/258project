@@ -94,6 +94,10 @@
 	packet switching:method used by the Internet. Each packet is individually routed, use router's routing table, Different packets may take different paths. A packet switch has buffers.
 4.6 
 why packet switching? Efficient use of expensive links, links are expensive, allow bursty flows to share the same link efficiently. Resilience to failure of links & routers
+
+4.8 statistical multiplex grain 2c/R
+packet switching allow statistical multiplex
+
 5, 
 	Is layering the best approach?
 		good: Simplifies design
